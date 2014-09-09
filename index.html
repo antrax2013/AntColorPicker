@@ -70,6 +70,23 @@
                         <td>largeurPalette <span class="type">[integer]</span></td>
                         <td><span class="description">Integer to define the width of the div of the AntColorPicker</span></td>
                     </tr>
+                    <tr>
+                        <td>contentTemplate <span class="type">[optional template html]</span></td>
+                        <td><span class="description"></span></td>
+                    </tr>
+                    <tr>
+                        <td>contentLineTemplate <span class="type">[optional template html]</span></td>
+                        <td><span class="description">The template Html to display colored boxes. It contain tag which will be replaced to insert colors. The template of tag is as follow : #tag#.
+                            <pre><code>example based on color :
+&lt;li&gt;
+    &lt;a name="#color#" rel="#color#" style="background:#color#;" title="#color#"&gt;&lt;/a&gt;
+&lt;/li&gt;</code></pre>
+                        </span></td>
+                    </tr>
+                    <tr>
+                        <td>builder <span class="type">[optional JavaScript anonymous function]</span></td>
+                        <td><span class="description">The default function to build the html content of the Antcolorpicker based on contentTemplate and contentLineTemplate parameters. Contained tags from templates are replaced with it.</span></td>
+                    </tr>
 				</table>
 			</section>
 
@@ -78,8 +95,12 @@
 				<table>
 					<tr>
 						<td>Basic sample of <strong>AntColorPicker</strong>.</td>
-						<td><a href="samples/basic-sample-antcolorpicker.html" title="Demo of AntColorPicker, the jQuery color picker of AntProduction" target="_blank">Try it</a></td>
+						<td><a href="samples/basic-sample-antcolorpicker.html" title="Basic sample of AntColorPicker, the jQuery color picker of AntProduction" target="_blank">Try it</a></td>
 					</tr>
+                    <tr>
+                        <td>Sample of custom <strong>AntColorPicker</strong>.</td>
+                        <td><a href="samples/sample-customise-antcolorpicker.html" title="Sample of custom AntColorPicker, the jQuery color picker of AntProduction" target="_blank">Try it</a></td>
+                    </tr>
 				</table>
 			</section>
 		</article>

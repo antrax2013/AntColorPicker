@@ -152,6 +152,8 @@ footer a:hover, footer a:visited, footer a:link { color:white;}
     max-width: 95%;
 }
 
+code {font-size: small;}
+
 .main-content {
     padding-left: 10px;
     padding-top: 10px;

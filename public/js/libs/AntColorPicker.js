@@ -1,4 +1,4 @@
-/*! AntColorPicker V1.0
+/*! AntColorPicker V1.1
  * Copyright (c) 2014 AntProduction
  * http://antproduction.free.fr/AntColorPicker
  * https://github.com/antrax2013/AntColorPicker
@@ -12,16 +12,63 @@
 
 (function ($) {
     $.fn.AntColorPicker = function(options) {
+
+        //definition de la strucutre Html de base de la palette
+        var contentTemplate = '<div id="AntColorPicker" class="AntColorPicker">';
+        contentTemplate += '<ul>';
+        contentTemplate += "#contentLineTemplate#";
+        contentTemplate += '</ul>';
+        contentTemplate += '#crossToClose#';
+        contentTemplate += '</div>';
+
+        var contentLineTemplate = '<li><a name="#color#" rel="#color#" style="background:#color#;" title="#color#"></a></li>';
+
+        var templateCorssToClose = '<a id="CloseColorPicker" class="AntColorPickerClose" title="#labelClose#">#labelClose#</a>';
+
+        //Méthode privée remplaçant les tags
+        function TagConvertor(chaine, TagList, joker) {
+
+            var _mask = (joker == undefined)? "#":joker;
+
+            for (var val in TagList) chaine = chaine.replace(new RegExp(_mask+val+_mask, "g"), TagList[val]);
+
+            return chaine;
+        }
+
+        //Méthode privée alimentant le template
+        function contentBuilder(contentLine) {
+            var content='';
+            var color='';
+            var values = ['00', '33', '66', '99', 'CC', 'FF'];
+            for (r = 0; r < 6; r++) {
+                for (g = 0; g < 6; g++) {
+                    for (b = 0; b < 6; b++) {
+                        color = '#' + values[r] + values[g] + values[b];
+                        content += TagConvertor(contentLine,{"color":color});
+                    }
+                }
+            }
+            return content;
+        }
+
         //On définit nos paramètres par défaut
         var defauts=
         {
             "iconPath": "../public/images/antColorPicker/",
             //"withIconeInInput": true,
             "withRAZOption": true,
+            "withCrossToClose": true,
             "labelClose":"Fermer",
             "labelRAZColor":"Réinitialiser la valeur",
             "zIndex": 1500,
-            "largeurPalette": 390
+            "largeurPalette": 390,
+            "contentTemplate": contentTemplate,
+            "contentLineTemplate": contentLineTemplate,
+            "builder": function(contentTempLinelate, contentTemplate, templateCorssToClose, labelClose) { //méthode construisant la palette
+                var content = contentBuilder(contentTempLinelate);
+                content = contentTemplate.replace("#contentLineTemplate#",content);
+                return content;
+            }
         };
 
         //Lecture des paramétres et fusion avec ceux par défaut
@@ -31,7 +78,6 @@
 
             var $$ = $(this);
             var oldVal = "";
-
 
             //Mise en palce de la couleur de fond en fonction de la valeur du champ
             $$.attr("style", "background-color:" + $$.val());
@@ -100,23 +146,17 @@
                 removeColorPicker();
 
                 // On construit le Html de la palette
-                var content = ''; // Variable que va recevoir le code html
-                content += '<div id="AntColorPicker" class="AntColorPicker">';
-                content += '<ul>';
-
-                var values = ['00', '33', '66', '99', 'CC', 'FF'];
-                for (r = 0; r < 6; r++) {
-                    for (g = 0; g < 6; g++) {
-                        for (b = 0; b < 6; b++) {
-                            color = '#' + values[r] + values[g] + values[b];
-                            content += '<li><a name="' + color + '" rel="' + color + '" style="background:' + color + ';" title="' + color + '"></a></li>';
-                        }
+                if (typeof (parametres.builder) == 'function') {
+                    if(parametres.withCrossToClose!=true) {
+                        parametres.contentTemplate = parametres.contentTemplate.replace("#crossToClose#","");
                     }
-                }
+                    else {
+                        parametres.contentTemplate = TagConvertor(contentTemplate,{ "crossToClose": templateCorssToClose, "labelClose":parametres.labelClose});
+                    }
 
-                content += '</ul>';
-                content += '<a id="CloseColorPicker" class="AntColorPickerClose" title="'+parametres.labelClose+'">'+parametres.labelClose+'</a>';
-                content += '</div>';
+                    var content = parametres.builder(parametres.contentLineTemplate, parametres.contentTemplate);
+                }
+                else throw "Error: the builder parameter must be a function.";
 
                 // On la place dans la page aux coordonnées du textfield
                 $(content).css({
