@@ -1,4 +1,4 @@
-/*! AntColorPicker V1.1
+/*! AntColorPicker V1.11
  * Copyright (c) 2014 AntProduction
  * http://antproduction.free.fr/AntColorPicker
  * https://github.com/antrax2013/AntColorPicker
@@ -59,6 +59,7 @@
             "withRAZOption": true,
             "withCrossToClose": true,
             "labelClose":"Fermer",
+            "$BGColorTarget":'#AntColorPicker',
             "labelRAZColor":"Réinitialiser la valeur",
             "zIndex": 1500,
             "largeurPalette": 390,
@@ -72,7 +73,7 @@
         };
 
         //Lecture des paramétres et fusion avec ceux par défaut
-        var parametres=$.extend(defauts, options);
+        var parametres=$.extend(true, defauts, options);
 
         return this.each(function () {
 
@@ -89,7 +90,6 @@
 
             //if(parametres.withIconeInInput) $$.addClass('AntColorPickerIconeInput');
                 //$$.css('background', "url('"+parametres.iconPath+"palette.png') no-repeat right");
-
 
             $('#' + id).bind("click", function () {
                 $$.val("");
@@ -132,8 +132,14 @@
                 var input = $$.val().replace("#","").toLowerCase();
 
                 var black = false;
+                var tmp=""
 
-                for(i=0; i< 6; i+=2) black |= parseInt(input.substr(i,2),16) > 128;
+                for(i=0; i< 6; i+=2) {
+                    tmp+=" "+input.substr(i,2).toString()
+                    black |= parseInt(input.substr(i,2),16) > 128;
+                }
+                console.log(black, tmp)
+
 
                 if(!black) $$.addClass('AntColorPicker-whiteFont');
                 else $$.removeClass('AntColorPicker-whiteFont');
@@ -151,7 +157,7 @@
                         parametres.contentTemplate = parametres.contentTemplate.replace("#crossToClose#","");
                     }
                     else {
-                        parametres.contentTemplate = TagConvertor(contentTemplate,{ "crossToClose": templateCorssToClose, "labelClose":parametres.labelClose});
+                        parametres.contentTemplate = TagConvertor(parametres.contentTemplate,{ "crossToClose": templateCorssToClose, "labelClose":parametres.labelClose});
                     }
 
                     var content = parametres.builder(parametres.contentLineTemplate, parametres.contentTemplate);
@@ -164,23 +170,17 @@
                     left: x,
                     top: y,
                     zIndex: parametres.zIndex,
-                    width: parametres.largeurPalette + 'px',
-                    backgroundColor: $$.val()
+                    width: parametres.largeurPalette + 'px'
                 }).appendTo('body'); // Insertion dans le body html
 
-                //$('#ColorPicker').focus();
-                //$(content).appendTo('body'); // Insertion dans le body html
-
-                // Lorsque le curseur sort du champ de saisi
-                /*$('#ColorPicker').focusout(function () {
-                removeColorPicker();
-                });*/
+                //Affectation à la cible de la couleur courante
+                $(parametres.$BGColorTarget).css('backgroundColor', $$.val());
 
                 // Au survol d'une couleur, on change le fond de la palette
                 $('#AntColorPicker a').hover(function () {
-                    $('#AntColorPicker').css('backgroundColor', $(this).attr('rel')); // Si l'élément à déjà une couleur on l'utilise
+                    $(parametres.$BGColorTarget).css('backgroundColor', $(this).attr('rel')); // Si l'élément à déjà une couleur on l'utilise
                 }, function () {
-                    $('#AntColorPicker').css('backgroundColor', $$.val());
+                    $(parametres.$BGColorTarget).css('backgroundColor', $$.val());
                 });
 
                 // Lorsqu'une couleur est cliqué, on affiche la valeur dans le textfield
@@ -193,7 +193,7 @@
 
                 // Au survol d'une couleur, on change le fond
                 $('#AntColorPicker a').mouseover(function () {
-                    $('#AntColorPicker').css('backgroundColor', $(this).attr('rel'));
+                    $(parametres.$BGColorTarget).css('backgroundColor', $(this).attr('rel'));
                 });
 
                 // On supprime la palette si le lien "Fermer" est cliqué
