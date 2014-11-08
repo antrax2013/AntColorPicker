@@ -10,7 +10,7 @@
  *
  */
 
-(function ($) {
+;(function ($) {
     $.fn.AntColorPicker = function(options) {
 
         //definition de la strucutre Html de base de la palette
@@ -54,22 +54,21 @@
         //On définit nos paramètres par défaut
         var defauts=
         {
-            "iconPath": "../public/images/antColorPicker/",
-            //"withIconeInInput": true,
-            "withRAZOption": true,
-            "withCrossToClose": true,
-            "labelClose":"Fermer",
-            "$BGColorTarget":'#AntColorPicker',
-            "labelRAZColor":"Réinitialiser la valeur",
-            "zIndex": 1500,
-            "largeurPalette": 390,
-            "contentTemplate": contentTemplate,
-            "contentLineTemplate": contentLineTemplate,
             "builder": function(contentTempLinelate, contentTemplate, templateCorssToClose, labelClose) { //méthode construisant la palette
                 var content = contentBuilder(contentTempLinelate);
                 content = contentTemplate.replace("#contentLineTemplate#",content);
                 return content;
-            }
+            },
+            "contentLineTemplate": contentLineTemplate,
+            "contentTemplate": contentTemplate,
+            "iconPath": "../public/images/antColorPicker/",
+            "labelClose":"Fermer",
+            "labelRAZColor":"Réinitialiser la valeur",
+            "largeurPalette": 390,
+            "withRAZOption": true,
+            "withCrossToClose": true,
+            "zIndex": 1500,
+            "$BGColorTarget":'#AntColorPicker'
         };
 
         //Lecture des paramétres et fusion avec ceux par défaut
@@ -138,7 +137,6 @@
                     tmp+=" "+input.substr(i,2).toString()
                     black |= parseInt(input.substr(i,2),16) > 128;
                 }
-                console.log(black, tmp)
 
 
                 if(!black) $$.addClass('AntColorPicker-whiteFont');
