@@ -53,6 +53,8 @@ p, strong, mark, em {
 }
 
 .blue, .type, a.blue { color:#0500fd; }
+.darkred {color:#8b0000 !important;}
+
 strong {color: #2e2e2e;}
 strong.bold {
     font-weight: bold;
