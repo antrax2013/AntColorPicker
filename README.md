@@ -7,7 +7,10 @@ AntColorPicker, is the jQuery color picker plug-in of AntProduction.
 
 Have a question about AntColorPicker ? Please use GitHub Issue. 
 
-Release Note: V1.0 - 07/23/2014
+Release Note: V1.12 - 02/07/2015
 =============
-- first version published
+- improved control of the color entry
+- is added a new option to display or not icon of color palette into the input field 
+- improved plug-in behavior
+- minor corrections
 
