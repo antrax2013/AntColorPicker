@@ -1,5 +1,5 @@
-/*! AntColorPicker V1.11
- * Copyright (c) 2014 AntProduction
+/*! AntColorPicker V1.12
+ * Copyright (c) 2015 AntProduction
  * http://antproduction.free.fr/AntColorPicker
  * https://github.com/antrax2013/AntColorPicker
  *
@@ -67,6 +67,7 @@
             "largeurPalette": 390,
             "withRAZOption": true,
             "withCrossToClose": true,
+            "withPaletteIcon": true,
             "zIndex": 1500,
             "$BGColorTarget":'#AntColorPicker'
         };
@@ -78,6 +79,9 @@
 
             var $$ = $(this);
             var oldVal = "";
+            var saisie=false;
+
+            if(parametres.withPaletteIcon) $$.addClass("AntColorPickerIconeInput");
 
             //Mise en palce de la couleur de fond en fonction de la valeur du champ
             $$.attr("style", "background-color:" + $$.val());
@@ -92,7 +96,7 @@
 
             $('#' + id).bind("click", function () {
                 $$.val("");
-                $$.attr("style", "background-color:" + $$.val());
+                $$.attr("style", "background-color:" + "");
             });
 
 
@@ -104,8 +108,12 @@
             // Lorsque le curseur entre dans le champ de saisi
             $$.focusin(function (e) { start(e); });
 
+            // Lorsque l'on click sur le champ de saisie
+            $$.click(function (e) { start(e); });
+
             function start(e) {
                 oldVal = $$.val();
+                saisie=false;
                 x = $$.offset().left;
 
                 if ((x + parametres.largeurPalette) > largeurEcran) x -= parametres.largeurPalette;
@@ -116,14 +124,20 @@
                 buildColorPicker();
             };
 
-            $$.click(function (e) { e.stopPropagation(); });
-
             $$.focusout(function () {
                 var tmp = $$.val();
                 var reg1 = new RegExp("^[#]?[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$", "g");
 
-                if (!tmp.match(reg1)) $$.val(oldVal);
                 if (tmp.indexOf("#") == -1 && tmp != "") $$.val("#" + $$.val());
+                if (!tmp.match(reg1)) $$.val(oldVal);
+                else {
+                    //si on a pas saisie dans l'input, il ne faut pas retirer le color picker sinon on coupe l'herbe sous le pied du click
+                    if(saisie){
+                        $$.css('backgroundColor', $$.val());
+                        chooseFontColor();
+                        removeColorPicker();
+                    }
+                }
             });
 
             // Fonction mettant une couleur de font claire quand la couleur choisie est foncée et vis versa
@@ -137,7 +151,6 @@
                     tmp+=" "+input.substr(i,2).toString()
                     black |= parseInt(input.substr(i,2),16) > 128;
                 }
-
 
                 if(!black) $$.addClass('AntColorPicker-whiteFont');
                 else $$.removeClass('AntColorPicker-whiteFont');
@@ -181,10 +194,11 @@
                     $(parametres.$BGColorTarget).css('backgroundColor', $$.val());
                 });
 
-                // Lorsqu'une couleur est cliqué, on affiche la valeur dans le textfield
-                $('#AntColorPicker a').not('.AntColorPickerClose .RaZAntColorPicker').click(function () {
-                    $$.val($(this).attr('rel'));
-                    $$.css('backgroundColor', $(this).attr('rel'));
+                // Lorsqu'une couleur est cliqué, on affiche la valeur dans le textfield (se fait après le focus out)
+                $('#AntColorPicker a').not('.AntColorPickerClose .RaZAntColorPicker').click(function (event) {
+                    var tmp = $(this).attr('rel');
+                    $$.val(tmp);
+                    $$.css('backgroundColor', tmp);
                     chooseFontColor();
                     removeColorPicker();
                 });
@@ -197,6 +211,12 @@
                 // On supprime la palette si le lien "Fermer" est cliqué
                 $('#AntColorPicker a.close').click(function () {
                     removeColorPicker();
+                });
+
+                //Fermeture de la palette si on presse la touche escape
+                $$.keyup(function( event ) {
+                    if ( event.keyCode == 27 ) { removeColorPicker(); }
+                    else saisie=true;
                 });
             }
 

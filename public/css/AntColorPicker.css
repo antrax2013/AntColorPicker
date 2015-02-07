@@ -39,5 +39,7 @@ img.RaZAntColorPicker {
 .AntColorPicker-whiteFont { color: white;}
 
 input.AntColorPickerIconeInput {
-    background: url('../images/antColorPicker/palette.png') no-repeat right;
+    background-image: url('../images/antColorPicker/palette.png');
+    background-repeat: no-repeat;
+    background-position: right;
 }
